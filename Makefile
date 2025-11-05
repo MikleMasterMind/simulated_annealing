@@ -129,30 +129,6 @@ AnnealingScheduler/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/build
 .PHONY : AnnealingScheduler/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
-
-# target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/main.cpp.o
-.PHONY : main.cpp.o
-
-main.i: main.cpp.i
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/main.cpp.s
-.PHONY : main.cpp.s
-
 src/BoltzmannCooling.o: src/BoltzmannCooling.cpp.o
 .PHONY : src/BoltzmannCooling.o
 
@@ -297,6 +273,54 @@ src/LogarithmicCooling.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/LogarithmicCooling.cpp.s
 .PHONY : src/LogarithmicCooling.cpp.s
 
+src/ScheduleMutation.o: src/ScheduleMutation.cpp.o
+.PHONY : src/ScheduleMutation.o
+
+# target to build an object file
+src/ScheduleMutation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ScheduleMutation.cpp.o
+.PHONY : src/ScheduleMutation.cpp.o
+
+src/ScheduleMutation.i: src/ScheduleMutation.cpp.i
+.PHONY : src/ScheduleMutation.i
+
+# target to preprocess a source file
+src/ScheduleMutation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ScheduleMutation.cpp.i
+.PHONY : src/ScheduleMutation.cpp.i
+
+src/ScheduleMutation.s: src/ScheduleMutation.cpp.s
+.PHONY : src/ScheduleMutation.s
+
+# target to generate assembly for a file
+src/ScheduleMutation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ScheduleMutation.cpp.s
+.PHONY : src/ScheduleMutation.cpp.s
+
+src/ScheduleSolution.o: src/ScheduleSolution.cpp.o
+.PHONY : src/ScheduleSolution.o
+
+# target to build an object file
+src/ScheduleSolution.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ScheduleSolution.cpp.o
+.PHONY : src/ScheduleSolution.cpp.o
+
+src/ScheduleSolution.i: src/ScheduleSolution.cpp.i
+.PHONY : src/ScheduleSolution.i
+
+# target to preprocess a source file
+src/ScheduleSolution.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ScheduleSolution.cpp.i
+.PHONY : src/ScheduleSolution.cpp.i
+
+src/ScheduleSolution.s: src/ScheduleSolution.cpp.s
+.PHONY : src/ScheduleSolution.s
+
+# target to generate assembly for a file
+src/ScheduleSolution.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ScheduleSolution.cpp.s
+.PHONY : src/ScheduleSolution.cpp.s
+
 src/SimulatedAnnealing.o: src/SimulatedAnnealing.cpp.o
 .PHONY : src/SimulatedAnnealing.o
 
@@ -321,6 +345,54 @@ src/SimulatedAnnealing.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/SimulatedAnnealing.cpp.s
 .PHONY : src/SimulatedAnnealing.cpp.s
 
+src/SolutionGenerator.o: src/SolutionGenerator.cpp.o
+.PHONY : src/SolutionGenerator.o
+
+# target to build an object file
+src/SolutionGenerator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/SolutionGenerator.cpp.o
+.PHONY : src/SolutionGenerator.cpp.o
+
+src/SolutionGenerator.i: src/SolutionGenerator.cpp.i
+.PHONY : src/SolutionGenerator.i
+
+# target to preprocess a source file
+src/SolutionGenerator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/SolutionGenerator.cpp.i
+.PHONY : src/SolutionGenerator.cpp.i
+
+src/SolutionGenerator.s: src/SolutionGenerator.cpp.s
+.PHONY : src/SolutionGenerator.s
+
+# target to generate assembly for a file
+src/SolutionGenerator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/SolutionGenerator.cpp.s
+.PHONY : src/SolutionGenerator.cpp.s
+
+src/main.o: src/main.cpp.o
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -330,9 +402,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... AnnealingScheduler"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
 	@echo "... src/BoltzmannCooling.o"
 	@echo "... src/BoltzmannCooling.i"
 	@echo "... src/BoltzmannCooling.s"
@@ -351,9 +420,21 @@ help:
 	@echo "... src/LogarithmicCooling.o"
 	@echo "... src/LogarithmicCooling.i"
 	@echo "... src/LogarithmicCooling.s"
+	@echo "... src/ScheduleMutation.o"
+	@echo "... src/ScheduleMutation.i"
+	@echo "... src/ScheduleMutation.s"
+	@echo "... src/ScheduleSolution.o"
+	@echo "... src/ScheduleSolution.i"
+	@echo "... src/ScheduleSolution.s"
 	@echo "... src/SimulatedAnnealing.o"
 	@echo "... src/SimulatedAnnealing.i"
 	@echo "... src/SimulatedAnnealing.s"
+	@echo "... src/SolutionGenerator.o"
+	@echo "... src/SolutionGenerator.i"
+	@echo "... src/SolutionGenerator.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

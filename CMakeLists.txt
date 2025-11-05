@@ -22,6 +22,9 @@ set(SOURCES
     src/CauchyCooling.cpp
     src/LogarithmicCooling.cpp
     src/SimulatedAnnealing.cpp
+    src/ScheduleSolution.cpp
+    src/ScheduleMutation.cpp
+    src/SolutionGenerator.cpp
 )
 
 # Список заголовочных файлов
@@ -33,6 +36,9 @@ set(HEADERS
     src/CauchyCooling.h
     src/LogarithmicCooling.h
     src/SimulatedAnnealing.h
+    src/ScheduleSolution.h
+    src/ScheduleMutation.h
+    src/SolutionGenerator.h
 )
 
 # Создание исполняемой программы
