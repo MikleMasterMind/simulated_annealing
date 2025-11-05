@@ -1,0 +1,115 @@
+\documentclass[openany, twoside, a4paper, 12pt]{extbook}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\usepackage[russian]{babel}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{indentfirst}
+\usepackage{lipsum}
+\usepackage{graphicx}
+
+% Настройка страницы
+\geometry{a4paper, margin=1in}
+\setlength{\headheight}{15pt}
+\pagenumbering{gobble}
+
+% Стиль страницы
+\fancypagestyle{mystyle}{
+    \fancyhf{} % очищаем текущие значения
+    \fancyfoot[C]{\thepage} % Номер страницы по центру снизу
+    \renewcommand{\headrulewidth}{0pt} % убираем линию
+}
+
+\begin{document}
+
+\title{\textbf{Формальная постановка задачи составления расписания с применением алгоритма имитации отжига}}
+\author{Ефанов Михаил Михайлович}
+\date{\today}
+\maketitle
+
+\newpage
+\pagenumbering{arabic}
+\pagestyle{mystyle}
+
+\section*{Формальная постановка задачи}
+
+\subsection*{Исходные данные:}
+\begin{itemize}
+    \item $N$ -- общее количество работ;
+    \item $J = \{j_1, j_2, \dots, j_N\}$ -- множество всех работ;
+    \item $\tau = \{t_1, t_2, \dots, t_N\}$ -- множество времен выполнения соответствующих работ $j_i$, где $\forall i \in \overline{1,N}$ выполняется $t_i > 0$;
+    \item $M$ -- количество доступных процессоров;
+    \item $P = \{p_1, p_2, \dots, p_M\}$ -- множество процессоров для выполнения работ.
+\end{itemize}
+
+\subsection*{Определение расписания:}
+Расписание представляется в виде матрицы $S \in \mathbb{Z}^{M \times N}$, где каждый элемент $s_{jk}$ обозначает порядковый номер работы, выполняемой на процессоре $j$ в позиции $k$, при этом:
+
+\begin{itemize}
+    \item $j \in \overline{1, M}$ -- индекс процессора
+    \item $k \in \overline{1, L_j}$ -- порядковая позиция в очереди процессора $j$
+    \item $L_j$ -- количество работ, назначенных на процессор $j$
+    \item $s_{jk} \in \overline{1, N} \cup \{0\}$, где 0 означает отсутствие работы в данной позиции
+\end{itemize}
+
+\subsection*{Условия корректности расписания:}
+\begin{enumerate}
+    \item \textbf{Полнота выполнения:} Все работы должны быть назначены:
+    \[
+    \bigcup_{j=1}^{M} \{s_{jk} \mid k = 1, \dots, L_j,\ s_{jk} \neq 0\} = \{1, 2, \dots, N\}
+    \]
+    
+    \item \textbf{Уникальность назначения:} Каждая работа выполняется ровно на одном процессоре:
+    \[
+    \forall i \in \overline{1,N} \ \exists! (j,k): s_{jk} = i
+    \]
+    
+    \item \textbf{Непересекаемость выполнения:} На каждом процессоре работы выполняются последовательно без перекрытий:
+    \[
+    \forall j \in \overline{1,M} \ \forall k_1 \neq k_2: s_{jk_1} \neq s_{jk_2}
+    \]
+\end{enumerate}
+
+\subsection*{Цель задачи:}
+Требуется найти такое расписание $S$, которое минимизирует заданный критерий качества при выполнении всех указанных условий.
+
+\subsection*{Минимизируемый критерий:}
+На основе значения $CRC32_{ЕФановММ} = 1077734097$ выбран первый критерий для реализации.
+
+\begin{itemize}
+    \item \textbf{Критерий $K_1$} (критерий разбалансированности расписания)
+\end{itemize}
+
+\subsubsection*{Формулировка критерия разбалансированности:}
+Пусть $G_j = \{s_{jk} \mid k = 1, \dots, L_j,\ s_{jk} \neq 0\}$ -- множество работ, назначенных на $j$-й процессор. Тогда:
+\[
+T_j = \sum_{i \in G_j} t_i
+\]
+представляет собой общее время выполнения всех работ на процессоре $j$.
+
+Критерий разбалансированности определяется как:
+\[
+K_1 = T_{\text{max}} - T_{\text{min}}
+\]
+где:
+\[
+T_{\text{max}} = \max_{j \in \overline{1, M}} T_j
+\]
+\[
+T_{\text{min}} = \min_{j \in \overline{1, M}} T_j
+\]
+
+\section*{Ограничения модели}
+
+\begin{itemize}
+    \item Каждый процессор $p_j \in P$ может одновременно выполнять не более одной работы;
+    \item Выполнение работ происходит без прерываний;
+    \item Переключение между работами на процессоре происходит мгновенно;
+    \item Время выполнения $t_i \in \tau$ является фиксированной величиной;
+    \item Работы на каждом процессоре выполняются в порядке, заданном матрицей расписания $S$.
+\end{itemize}
+
+\newpage
+
+\end{document}
