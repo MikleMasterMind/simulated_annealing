@@ -25,6 +25,10 @@ set(SOURCES
     src/ScheduleSolution.cpp
     src/ScheduleMutation.cpp
     src/SolutionGenerator.cpp
+    src/IDataGenerator.cpp
+    src/CSVDataGenerator.cpp
+    src/IDataReader.cpp
+    src/CSVDataReader.cpp
 )
 
 # Список заголовочных файлов
@@ -39,6 +43,10 @@ set(HEADERS
     src/ScheduleSolution.h
     src/ScheduleMutation.h
     src/SolutionGenerator.h
+    src/IDataGenerator.h
+    src/CSVDataGenerator.h
+    src/IDataReader.h
+    src/CSVDataReader.h
 )
 
 # Создание исполняемой программы

@@ -153,6 +153,54 @@ src/BoltzmannCooling.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/BoltzmannCooling.cpp.s
 .PHONY : src/BoltzmannCooling.cpp.s
 
+src/CSVDataGenerator.o: src/CSVDataGenerator.cpp.o
+.PHONY : src/CSVDataGenerator.o
+
+# target to build an object file
+src/CSVDataGenerator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/CSVDataGenerator.cpp.o
+.PHONY : src/CSVDataGenerator.cpp.o
+
+src/CSVDataGenerator.i: src/CSVDataGenerator.cpp.i
+.PHONY : src/CSVDataGenerator.i
+
+# target to preprocess a source file
+src/CSVDataGenerator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/CSVDataGenerator.cpp.i
+.PHONY : src/CSVDataGenerator.cpp.i
+
+src/CSVDataGenerator.s: src/CSVDataGenerator.cpp.s
+.PHONY : src/CSVDataGenerator.s
+
+# target to generate assembly for a file
+src/CSVDataGenerator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/CSVDataGenerator.cpp.s
+.PHONY : src/CSVDataGenerator.cpp.s
+
+src/CSVDataReader.o: src/CSVDataReader.cpp.o
+.PHONY : src/CSVDataReader.o
+
+# target to build an object file
+src/CSVDataReader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/CSVDataReader.cpp.o
+.PHONY : src/CSVDataReader.cpp.o
+
+src/CSVDataReader.i: src/CSVDataReader.cpp.i
+.PHONY : src/CSVDataReader.i
+
+# target to preprocess a source file
+src/CSVDataReader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/CSVDataReader.cpp.i
+.PHONY : src/CSVDataReader.cpp.i
+
+src/CSVDataReader.s: src/CSVDataReader.cpp.s
+.PHONY : src/CSVDataReader.s
+
+# target to generate assembly for a file
+src/CSVDataReader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/CSVDataReader.cpp.s
+.PHONY : src/CSVDataReader.cpp.s
+
 src/CauchyCooling.o: src/CauchyCooling.cpp.o
 .PHONY : src/CauchyCooling.o
 
@@ -200,6 +248,54 @@ src/ICoolingLaw.s: src/ICoolingLaw.cpp.s
 src/ICoolingLaw.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ICoolingLaw.cpp.s
 .PHONY : src/ICoolingLaw.cpp.s
+
+src/IDataGenerator.o: src/IDataGenerator.cpp.o
+.PHONY : src/IDataGenerator.o
+
+# target to build an object file
+src/IDataGenerator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/IDataGenerator.cpp.o
+.PHONY : src/IDataGenerator.cpp.o
+
+src/IDataGenerator.i: src/IDataGenerator.cpp.i
+.PHONY : src/IDataGenerator.i
+
+# target to preprocess a source file
+src/IDataGenerator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/IDataGenerator.cpp.i
+.PHONY : src/IDataGenerator.cpp.i
+
+src/IDataGenerator.s: src/IDataGenerator.cpp.s
+.PHONY : src/IDataGenerator.s
+
+# target to generate assembly for a file
+src/IDataGenerator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/IDataGenerator.cpp.s
+.PHONY : src/IDataGenerator.cpp.s
+
+src/IDataReader.o: src/IDataReader.cpp.o
+.PHONY : src/IDataReader.o
+
+# target to build an object file
+src/IDataReader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/IDataReader.cpp.o
+.PHONY : src/IDataReader.cpp.o
+
+src/IDataReader.i: src/IDataReader.cpp.i
+.PHONY : src/IDataReader.i
+
+# target to preprocess a source file
+src/IDataReader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/IDataReader.cpp.i
+.PHONY : src/IDataReader.cpp.i
+
+src/IDataReader.s: src/IDataReader.cpp.s
+.PHONY : src/IDataReader.s
+
+# target to generate assembly for a file
+src/IDataReader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/IDataReader.cpp.s
+.PHONY : src/IDataReader.cpp.s
 
 src/IMutation.o: src/IMutation.cpp.o
 .PHONY : src/IMutation.o
@@ -405,12 +501,24 @@ help:
 	@echo "... src/BoltzmannCooling.o"
 	@echo "... src/BoltzmannCooling.i"
 	@echo "... src/BoltzmannCooling.s"
+	@echo "... src/CSVDataGenerator.o"
+	@echo "... src/CSVDataGenerator.i"
+	@echo "... src/CSVDataGenerator.s"
+	@echo "... src/CSVDataReader.o"
+	@echo "... src/CSVDataReader.i"
+	@echo "... src/CSVDataReader.s"
 	@echo "... src/CauchyCooling.o"
 	@echo "... src/CauchyCooling.i"
 	@echo "... src/CauchyCooling.s"
 	@echo "... src/ICoolingLaw.o"
 	@echo "... src/ICoolingLaw.i"
 	@echo "... src/ICoolingLaw.s"
+	@echo "... src/IDataGenerator.o"
+	@echo "... src/IDataGenerator.i"
+	@echo "... src/IDataGenerator.s"
+	@echo "... src/IDataReader.o"
+	@echo "... src/IDataReader.i"
+	@echo "... src/IDataReader.s"
 	@echo "... src/IMutation.o"
 	@echo "... src/IMutation.i"
 	@echo "... src/IMutation.s"
