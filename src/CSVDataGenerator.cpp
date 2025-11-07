@@ -20,11 +20,9 @@ void CSVDataGenerator::generateData(int jobCount, int processorCount,
         throw std::runtime_error("Cannot open file: " + outputPath);
     }
     
-    // Записываем заголовок
     file << "processor_count,job_count,min_duration,max_duration\n";
     file << processorCount << "," << jobCount << "," << minDuration << "," << maxDuration << "\n";
     
-    // Записываем длительности работ
     file << "job_durations\n";
     auto durations = generateRandomDurations(jobCount, minDuration, maxDuration);
     

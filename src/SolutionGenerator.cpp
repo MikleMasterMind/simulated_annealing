@@ -17,6 +17,19 @@ std::shared_ptr<ScheduleSolution> SolutionGenerator::generateRandomSolution(
     return solution;
 }
 
+std::shared_ptr<ScheduleSolution> SolutionGenerator::generateWorstCaseSolution(
+    int jobCount, int processorCount, const std::vector<double>& jobDurations) {
+    
+    auto assignment = generateWorstCaseAssignment(jobCount, processorCount);
+    auto solution = std::make_shared<ScheduleSolution>(jobCount, processorCount, jobDurations);
+    
+    for (int i = 0; i < jobCount; ++i) {
+        solution->assignJobToProcessor(i, assignment[i]);
+    }
+    
+    return solution;
+}
+
 std::vector<int> SolutionGenerator::generateRandomAssignment(int jobCount, int processorCount) {
     if (jobCount <= 0 || processorCount <= 0) {
         throw std::invalid_argument("Job count and processor count must be positive");
@@ -30,6 +43,16 @@ std::vector<int> SolutionGenerator::generateRandomAssignment(int jobCount, int p
     for (int i = 0; i < jobCount; ++i) {
         assignment[i] = distribution(generator);
     }
+    
+    return assignment;
+}
+
+std::vector<int> SolutionGenerator::generateWorstCaseAssignment(int jobCount, int processorCount) {
+    if (jobCount <= 0 || processorCount <= 0) {
+        throw std::invalid_argument("Job count and processor count must be positive");
+    }
+    
+    std::vector<int> assignment(jobCount, 0); // Все работы на процессор 0
     
     return assignment;
 }

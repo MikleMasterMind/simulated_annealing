@@ -369,6 +369,30 @@ src/LogarithmicCooling.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/LogarithmicCooling.cpp.s
 .PHONY : src/LogarithmicCooling.cpp.s
 
+src/ParallelSimulatedAnnealing.o: src/ParallelSimulatedAnnealing.cpp.o
+.PHONY : src/ParallelSimulatedAnnealing.o
+
+# target to build an object file
+src/ParallelSimulatedAnnealing.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ParallelSimulatedAnnealing.cpp.o
+.PHONY : src/ParallelSimulatedAnnealing.cpp.o
+
+src/ParallelSimulatedAnnealing.i: src/ParallelSimulatedAnnealing.cpp.i
+.PHONY : src/ParallelSimulatedAnnealing.i
+
+# target to preprocess a source file
+src/ParallelSimulatedAnnealing.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ParallelSimulatedAnnealing.cpp.i
+.PHONY : src/ParallelSimulatedAnnealing.cpp.i
+
+src/ParallelSimulatedAnnealing.s: src/ParallelSimulatedAnnealing.cpp.s
+.PHONY : src/ParallelSimulatedAnnealing.s
+
+# target to generate assembly for a file
+src/ParallelSimulatedAnnealing.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AnnealingScheduler.dir/build.make CMakeFiles/AnnealingScheduler.dir/src/ParallelSimulatedAnnealing.cpp.s
+.PHONY : src/ParallelSimulatedAnnealing.cpp.s
+
 src/ScheduleMutation.o: src/ScheduleMutation.cpp.o
 .PHONY : src/ScheduleMutation.o
 
@@ -528,6 +552,9 @@ help:
 	@echo "... src/LogarithmicCooling.o"
 	@echo "... src/LogarithmicCooling.i"
 	@echo "... src/LogarithmicCooling.s"
+	@echo "... src/ParallelSimulatedAnnealing.o"
+	@echo "... src/ParallelSimulatedAnnealing.i"
+	@echo "... src/ParallelSimulatedAnnealing.s"
 	@echo "... src/ScheduleMutation.o"
 	@echo "... src/ScheduleMutation.i"
 	@echo "... src/ScheduleMutation.s"

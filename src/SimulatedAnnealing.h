@@ -2,6 +2,9 @@
 
 #include <memory>
 #include <random>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 #include "ISolution.h"
 #include "IMutation.h"
 #include "ICoolingLaw.h"
@@ -17,9 +20,24 @@ public:
     void setIterationsPerTemperature(int iterations);
     void setMaxIterationsWithoutImprovement(int iterations);
     
+    // Новые методы для многопоточности
+    void setCurrentSolution(const std::shared_ptr<ISolution>& solution);
+    std::shared_ptr<ISolution> getCurrentSolution() const;
+    std::shared_ptr<ISolution> getBestSolution() const;
+    double getBestFitness() const;
+    
+    void pause();
+    void resume();
+    void stop();
+    bool isRunning() const;
+    
     std::shared_ptr<ISolution> run();
 
 private:
+    mutable std::mutex solutionMutex_;
+    mutable std::mutex stateMutex_;
+    std::condition_variable pauseCondition_;
+    
     std::shared_ptr<ISolution> currentSolution_;
     std::shared_ptr<ISolution> bestSolution_;
     std::shared_ptr<IMutation> mutation_;
@@ -30,8 +48,13 @@ private:
     int iterationsPerTemperature_;
     int maxIterationsWithoutImprovement_;
     
-    std::mt19937 randomGenerator_;
+    std::atomic<bool> isRunning_;
+    std::atomic<bool> isPaused_;
+    std::atomic<bool> shouldStop_;
+    
+    mutable std::mt19937 randomGenerator_;
     
     void initializeRandomGenerator();
-    bool shouldAcceptWorseSolution(double deltaF);
+    bool shouldAcceptWorseSolution(double deltaF) const;
+    void waitIfPaused();
 };
