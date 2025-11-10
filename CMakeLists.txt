@@ -30,6 +30,7 @@ set(SOURCES
     src/IDataReader.cpp
     src/CSVDataReader.cpp
     src/ParallelSimulatedAnnealing.cpp
+    src/Logger.cpp
 )
 
 # Список заголовочных файлов
@@ -49,6 +50,7 @@ set(HEADERS
     src/IDataReader.h
     src/CSVDataReader.h
     src/ParallelSimulatedAnnealing.h
+    src/Logger.h
 )
 
 # Создание исполняемой программы

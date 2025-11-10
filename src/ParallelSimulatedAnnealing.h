@@ -22,6 +22,7 @@ public:
     void setInitialTemperature(double temperature);
     void setIterationsPerTemperature(int iterations);
     void setMaxIterationsWithoutImprovement(int iterations);
+    void setMaxIterationsWithoutImprovementGlobal(int iterations);
     void setExchangeInterval(int interval);
     
     std::shared_ptr<ISolution> run();
@@ -75,6 +76,7 @@ private:
     double initialTemperature_;
     int iterationsPerTemperature_;
     int maxIterationsWithoutImprovement_;
+    int maxIterationsWithoutImprovementGlobal_;
     
     void workerThread(int threadId);
     void initializeThreads();

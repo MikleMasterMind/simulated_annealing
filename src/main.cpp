@@ -11,10 +11,11 @@
 #include "LogarithmicCooling.h"
 #include "CSVDataGenerator.h"
 #include "CSVDataReader.h"
+#include "Logger.h"
 
 void printUsage(const std::string& programName) {
-    std::cout << "Usage: " << programName << " <job_count>  <processor_count> <min_duration> <max_duration> <exchange_interval> <initial_temperature> <cooling_law> <iterations_per_temperature> <iterations_without_improvement> <num_threads>" << std::endl;
-    std::cout << "Example: " << programName << " 10 2 1.0 15.0 100 1000.0 boltzmann 50 1000 4" << std::endl;
+    std::cout << "Usage: " << programName << " <job_count>  <processor_count> <min_duration> <max_duration> <exchange_interval> <initial_temperature> <cooling_law> <iterations_per_temperature> <iterations_without_improvement> <iterations_without_improvement_global> <num_threads>" << std::endl;
+    std::cout << "Example: " << programName << " 10 2 1.0 15.0 100 1000.0 boltzmann 50 1000 10 4" << std::endl;
     std::cout << "Cooling laws: boltzmann, cauchy, logarithmic" << std::endl;
     std::cout << "Default exchange_interval: 100" << std::endl;
 }
@@ -38,6 +39,9 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    bool enableLogging = true; // или false чтобы отключить
+    Logger::initialize(enableLogging, "simulated_annealing.log");
+
     try {
         int jobCount = std::stoi(argv[1]);
         int processorCount = std::stoi(argv[2]);
@@ -48,7 +52,8 @@ int main(int argc, char* argv[]) {
         std::string coolingLawName = argv[7];
         int iterationsPerTemperature = std::stoi(argv[8]);
         int iterationsWithoutImprovement = std::stoi(argv[9]);
-        int numThreads = std::stoi(argv[10]);
+        int iterationsWithoutImprovementGlobal = std::stoi(argv[10]);
+        int numThreads = std::stoi(argv[11]);
 
         if (jobCount <= 0 || processorCount <= 0 || numThreads <= 0 || exchangeInterval <= 0) {
             throw std::invalid_argument("All numeric parameters must be positive");
@@ -69,28 +74,19 @@ int main(int argc, char* argv[]) {
                   << " cooling, T0=" << initialTemperature << std::endl;
         std::cout << "Exchange interval: " << exchangeInterval << std::endl;
         
-        std::cout << "\n1. Generating test data..." << std::endl;
         CSVDataGenerator dataGenerator;
         dataGenerator.generateData(jobCount, processorCount, jobMinDuration, jobMaxDuration, "input.csv");
-        std::cout << "Test data generated in input.csv" << std::endl;
         
-        std::cout << "Reading generated test data..." << std::endl;
         CSVDataReader reader;
         InputData data = reader.readData("input.csv");
-        std::cout << "Data reading completed" << std::endl;
-        // std::cout << "Job durations: ";
-        // for (double duration : data.jobDurations) {
-        //     std::cout << duration << " ";
-        // }
-        // std::cout << std::endl;
         
-        std::cout << "\n2. Creating initial solution..." << std::endl;
+        std::cout << "\n1. Creating initial solution..." << std::endl;
         SolutionGenerator generator;
         auto initialSolution = generator.generateWorstCaseSolution(data.jobCount, data.processorCount, data.jobDurations);
         double initialFitness = initialSolution->evaluate();
         std::cout << "Initial solution fitness: " << initialFitness << std::endl;
         
-        std::cout << "\n3. Configuring parallel simulated annealing..." << std::endl;
+        std::cout << "\n2. Configuring parallel simulated annealing..." << std::endl;
         auto mutation = std::make_shared<ScheduleMutation>();
         
         ParallelSimulatedAnnealing psa(numThreads);
@@ -100,16 +96,17 @@ int main(int argc, char* argv[]) {
         psa.setInitialTemperature(initialTemperature);
         psa.setIterationsPerTemperature(iterationsPerTemperature);
         psa.setMaxIterationsWithoutImprovement(iterationsWithoutImprovement);
+        psa.setMaxIterationsWithoutImprovementGlobal(iterationsWithoutImprovementGlobal);
         psa.setExchangeInterval(exchangeInterval);
         
         std::cout << "Initial temperature: " << initialTemperature << std::endl;
         std::cout << "Cooling law: " << coolingLawName << std::endl;
-        std::cout << "Iterations per temperature: 50" << std::endl;
-        std::cout << "Max iterations without improvement: 100" << std::endl;
+        std::cout << "Iterations per temperature: " << iterationsPerTemperature << std::endl;
+        std::cout << "Max iterations without improvement: " << iterationsWithoutImprovement << std::endl;
         std::cout << "Exchange interval: " << exchangeInterval << std::endl;
         std::cout << "Number of threads: " << numThreads << std::endl;
         
-        std::cout << "\n4. Running parallel simulated annealing..." << std::endl;
+        std::cout << "\n3. Running parallel simulated annealing..." << std::endl;
         auto startTime = std::chrono::high_resolution_clock::now();
         
         auto bestSolution = psa.run();
@@ -119,7 +116,7 @@ int main(int argc, char* argv[]) {
         
         std::cout << "Algorithm completed in " << duration.count() << " ms" << std::endl;
         
-        std::cout << "\n5. Results:" << std::endl;
+        std::cout << "\n4. Results:" << std::endl;
         if (bestSolution) {
             auto scheduleSolution = std::dynamic_pointer_cast<ScheduleSolution>(bestSolution);
             if (scheduleSolution) {
@@ -145,7 +142,7 @@ int main(int argc, char* argv[]) {
             std::cout << "No solution found!" << std::endl;
         }
         
-        std::cout << "\n6. Validating solution..." << std::endl;
+        std::cout << "\n5. Validating solution..." << std::endl;
         if (bestSolution) {
             auto scheduleSolution = std::dynamic_pointer_cast<ScheduleSolution>(bestSolution);
             if (scheduleSolution) {
@@ -164,9 +161,9 @@ int main(int argc, char* argv[]) {
                 }
                 
                 if (isValid) {
-                    std::cout << "✓ Solution is valid - all jobs assigned correctly" << std::endl;
+                    std::cout << "Solution is valid - all jobs assigned correctly" << std::endl;
                 } else {
-                    std::cout << "✗ Solution is invalid!" << std::endl;
+                    std::cout << "Solution is invalid!" << std::endl;
                 }
                 
                 std::vector<bool> jobsAssigned(jobCount, false);
@@ -188,9 +185,9 @@ int main(int argc, char* argv[]) {
                 }
                 
                 if (allJobsAssigned) {
-                    std::cout << "✓ All jobs are assigned to processors" << std::endl;
+                    std::cout << "All jobs are assigned to processors" << std::endl;
                 } else {
-                    std::cout << "✗ Some jobs are missing!" << std::endl;
+                    std::cout << "Some jobs are missing!" << std::endl;
                 }
             }
         }

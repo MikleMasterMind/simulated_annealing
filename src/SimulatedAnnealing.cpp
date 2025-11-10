@@ -1,4 +1,5 @@
 #include "SimulatedAnnealing.h"
+#include "Logger.h"
 #include <cmath>
 #include <chrono>
 #include <thread>
@@ -18,6 +19,7 @@ void SimulatedAnnealing::setInitialSolution(const std::shared_ptr<ISolution>& so
     std::lock_guard<std::mutex> lock(solutionMutex_);
     currentSolution_ = solution->clone();
     bestSolution_ = solution->clone();
+    Logger::log("Initial solution set, fitness: " + std::to_string(solution->evaluate()));
 }
 
 void SimulatedAnnealing::setMutation(const std::shared_ptr<IMutation>& mutation) {
@@ -34,16 +36,19 @@ void SimulatedAnnealing::setInitialTemperature(double temperature) {
     std::lock_guard<std::mutex> lock(stateMutex_);
     initialTemperature_ = temperature;
     currentTemperature_ = temperature;
+    Logger::log("Initial temperature set to: " + std::to_string(temperature));
 }
 
 void SimulatedAnnealing::setIterationsPerTemperature(int iterations) {
     std::lock_guard<std::mutex> lock(stateMutex_);
     iterationsPerTemperature_ = iterations;
+    Logger::log("Iterations per temperature set to: " + std::to_string(iterations));
 }
 
 void SimulatedAnnealing::setMaxIterationsWithoutImprovement(int iterations) {
     std::lock_guard<std::mutex> lock(stateMutex_);
     maxIterationsWithoutImprovement_ = iterations;
+    Logger::log("Max iterations without improvement set to: " + std::to_string(iterations));
 }
 
 void SimulatedAnnealing::setCurrentSolution(const std::shared_ptr<ISolution>& solution) {
@@ -54,8 +59,11 @@ void SimulatedAnnealing::setCurrentSolution(const std::shared_ptr<ISolution>& so
         double newFitness = solution->evaluate();
         double bestFitness = bestSolution_->evaluate();
         
+        Logger::log("External solution set, fitness: " + std::to_string(newFitness));
+        
         if (newFitness < bestFitness) {
             bestSolution_ = solution->clone();
+            Logger::log("NEW GLOBAL BEST from external: " + std::to_string(newFitness));
         }
     }
 }
@@ -77,6 +85,7 @@ double SimulatedAnnealing::getBestFitness() const {
 
 void SimulatedAnnealing::pause() {
     isPaused_ = true;
+    Logger::log("Algorithm paused");
 }
 
 void SimulatedAnnealing::resume() {
@@ -85,6 +94,7 @@ void SimulatedAnnealing::resume() {
         isPaused_ = false;
     }
     pauseCondition_.notify_all();
+    Logger::log("Algorithm resumed");
 }
 
 void SimulatedAnnealing::stop() {
@@ -94,6 +104,7 @@ void SimulatedAnnealing::stop() {
         isPaused_ = false;
     }
     pauseCondition_.notify_all();
+    Logger::log("Algorithm stopped");
 }
 
 bool SimulatedAnnealing::isRunning() const {
@@ -107,12 +118,22 @@ void SimulatedAnnealing::initializeRandomGenerator() {
 
 bool SimulatedAnnealing::shouldAcceptWorseSolution(double deltaF) const {
     if (deltaF <= 0) {
+        Logger::log("ACCEPT: Improvement deltaF=" + std::to_string(deltaF));
         return true;
     }
     
     double probability = std::exp(-deltaF / currentTemperature_);
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    return distribution(randomGenerator_) < probability;
+    double randomValue = distribution(randomGenerator_);
+    bool accepted = randomValue < probability;
+    
+    Logger::log("DECISION: deltaF=" + std::to_string(deltaF) + 
+                ", T=" + std::to_string(currentTemperature_) +
+                ", probability=" + std::to_string(probability) +
+                ", random=" + std::to_string(randomValue) +
+                ", accepted=" + std::to_string(accepted));
+    
+    return accepted;
 }
 
 void SimulatedAnnealing::waitIfPaused() {
@@ -124,6 +145,7 @@ void SimulatedAnnealing::waitIfPaused() {
 
 std::shared_ptr<ISolution> SimulatedAnnealing::run() {
     if (!currentSolution_ || !mutation_ || !coolingLaw_) {
+        Logger::log("ERROR: Algorithm not properly initialized");
         return nullptr;
     }
     
@@ -134,12 +156,19 @@ std::shared_ptr<ISolution> SimulatedAnnealing::run() {
     int iterationsWithoutImprovement = 0;
     int totalIteration = 0;
     
+    double initialFitness;
     {
         std::lock_guard<std::mutex> lock(solutionMutex_);
         bestSolution_ = currentSolution_->clone();
+        initialFitness = bestSolution_->evaluate();
     }
     
-    double bestFitness = bestSolution_->evaluate();
+    double bestFitness = initialFitness;
+    
+    Logger::log("Algorithm STARTED: T0=" + std::to_string(initialTemperature_) +
+                ", iterations_per_temp=" + std::to_string(iterationsPerTemperature_) +
+                ", max_no_improve=" + std::to_string(maxIterationsWithoutImprovement_) +
+                ", initial_fitness=" + std::to_string(initialFitness));
     
     while (iterationsWithoutImprovement < maxIterationsWithoutImprovement_ && !shouldStop_) {
         waitIfPaused();
@@ -171,24 +200,42 @@ std::shared_ptr<ISolution> SimulatedAnnealing::run() {
                     bestSolution_ = newSolution->clone();
                     bestFitness = newFitness;
                     improvedInThisCycle = true;
+                    
+                    Logger::log("NEW BEST: fitness improved to " + std::to_string(newFitness) +
+                                " (iteration " + std::to_string(totalIteration) + ")");
                 }
             }
             
             ++totalIteration;
+            
+            // Логируем прогресс каждые 100 итераций
+            if (totalIteration % 100 == 0) {
+                Logger::log("Progress: iteration=" + std::to_string(totalIteration) +
+                            ", current_fitness=" + std::to_string(currentFitness) +
+                            ", best_fitness=" + std::to_string(bestFitness) +
+                            ", T=" + std::to_string(currentTemperature_));
+            }
         }
         
         if (improvedInThisCycle) {
             iterationsWithoutImprovement = 0;
+            Logger::log("Temperature cycle: IMPROVEMENT found");
         } else {
             ++iterationsWithoutImprovement;
+            Logger::log("Temperature cycle: NO improvement, count=" + 
+                        std::to_string(iterationsWithoutImprovement));
         }
         
         {
             std::lock_guard<std::mutex> lock(stateMutex_);
+            double oldTemperature = currentTemperature_;
             currentTemperature_ = coolingLaw_->cool(currentTemperature_, totalIteration);
+            Logger::log("Temperature cooled: " + std::to_string(oldTemperature) + 
+                        " -> " + std::to_string(currentTemperature_));
         }
         
         if (currentTemperature_ < 1e-10) {
+            Logger::log("Stopping: temperature below threshold");
             break;
         }
     }
@@ -196,5 +243,9 @@ std::shared_ptr<ISolution> SimulatedAnnealing::run() {
     isRunning_ = false;
     
     std::lock_guard<std::mutex> lock(solutionMutex_);
+    Logger::log("Algorithm FINISHED: total_iterations=" + std::to_string(totalIteration) +
+                ", final_fitness=" + std::to_string(bestFitness) +
+                ", improvement=" + std::to_string(initialFitness - bestFitness));
+    
     return bestSolution_;
 }
