@@ -1,0 +1,29 @@
+=== Parallel Simulated Annealing Scheduler ===
+Parameters: 400 jobs, 14 processors, duration range [1, 15]
+Algorithm: 1 threads, logarithmic cooling, T0=100000
+Exchange interval: 1000
+
+1. Creating initial solution...
+Initial solution fitness: 3262.78
+
+2. Configuring parallel simulated annealing...
+Initial temperature: 100000
+Cooling law: logarithmic
+Iterations per temperature: 5000
+Max iterations without improvement: 100000
+Exchange interval: 1000
+Number of threads: 1
+
+3. Running parallel simulated annealing...
+Algorithm completed in 2186 ms
+
+4. Results:
+Best solution fitness: 224.196
+Improvement: 3038.58
+Improvement percentage: 93.1287%
+
+5. Validating solution...
+Solution is valid - all jobs assigned correctly
+All jobs are assigned to processors
+
+=== Parallel algorithm finished ===

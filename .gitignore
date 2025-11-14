@@ -2,3 +2,5 @@ CMakeFiles
 AnnealingScheduler
 *.cmake
 CMakeCache.txt
+input.csv
+*.log
