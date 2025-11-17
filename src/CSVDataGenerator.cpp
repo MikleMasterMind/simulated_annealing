@@ -24,7 +24,14 @@ void CSVDataGenerator::generateData(int jobCount, int processorCount,
     file << processorCount << "," << jobCount << "," << minDuration << "," << maxDuration << "\n";
     
     file << "job_durations\n";
-    auto durations = generateRandomDurations(jobCount, minDuration, maxDuration);
+    auto seed = std::chrono::steady_clock::now().time_since_epoch().count();
+    std::mt19937 generator(static_cast<unsigned int>(seed));
+    std::uniform_real_distribution<double> distribution(minDuration, maxDuration);
+    
+    std::vector<double> durations(jobCount);
+    for (int i = 0; i < jobCount; ++i) {
+        durations[i] = distribution(generator);
+    }
     
     for (size_t i = 0; i < durations.size(); ++i) {
         file << durations[i];
@@ -35,17 +42,4 @@ void CSVDataGenerator::generateData(int jobCount, int processorCount,
     file << "\n";
     
     file.close();
-}
-
-std::vector<double> CSVDataGenerator::generateRandomDurations(int jobCount, double minDuration, double maxDuration) {
-    auto seed = std::chrono::steady_clock::now().time_since_epoch().count();
-    std::mt19937 generator(static_cast<unsigned int>(seed));
-    std::uniform_real_distribution<double> distribution(minDuration, maxDuration);
-    
-    std::vector<double> durations(jobCount);
-    for (int i = 0; i < jobCount; ++i) {
-        durations[i] = distribution(generator);
-    }
-    
-    return durations;
 }

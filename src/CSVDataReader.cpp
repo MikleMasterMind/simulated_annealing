@@ -12,10 +12,8 @@ InputData CSVDataReader::readData(const std::string& inputPath) {
     InputData data;
     std::string line;
     
-    // Пропускаем заголовок
     std::getline(file, line);
     
-    // Читаем основные параметры
     if (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string token;
@@ -33,30 +31,22 @@ InputData CSVDataReader::readData(const std::string& inputPath) {
         data.maxDuration = std::stod(token);
     }
     
-    // Пропускаем заголовок длительностей
     std::getline(file, line);
     
-    // Читаем длительности работ
     if (std::getline(file, line)) {
-        data.jobDurations = parseDurations(line);
+        std::vector<double> durations;
+        std::stringstream ss(line);
+        std::string token;
+        
+        while (std::getline(ss, token, ',')) {
+            data.jobDurations.push_back(std::stod(token));
+        }
     }
     
     file.close();
     
     validateData(data);
     return data;
-}
-
-std::vector<double> CSVDataReader::parseDurations(const std::string& line) {
-    std::vector<double> durations;
-    std::stringstream ss(line);
-    std::string token;
-    
-    while (std::getline(ss, token, ',')) {
-        durations.push_back(std::stod(token));
-    }
-    
-    return durations;
 }
 
 void CSVDataReader::validateData(const InputData& data) {
