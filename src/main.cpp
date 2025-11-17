@@ -14,10 +14,9 @@
 #include "Logger.h"
 
 void printUsage(const std::string& programName) {
-    std::cout << "Usage: " << programName << " <job_count>  <processor_count> <min_duration> <max_duration> <exchange_interval> <initial_temperature> <cooling_law> <iterations_per_temperature> <iterations_without_improvement> <iterations_without_improvement_global> <num_threads>" << std::endl;
-    std::cout << "Example: " << programName << " 10 2 1.0 15.0 100 1000.0 boltzmann 50 1000 10 4" << std::endl;
+    std::cout << "Usage: " << programName << " <job_count>  <processor_count> <min_duration> <max_duration> <exchange_interval> <initial_temperature> <cooling_law> <iterations_per_temperature> <iterations_without_improvement> <iterations_without_improvement_global> <num_threads> <log>(optional)" << std::endl;
+    std::cout << "Example: " << programName << " 10 2 1.0 15.0 100 1000.0 boltzmann 50 1000 10 4 log" << std::endl;
     std::cout << "Cooling laws: boltzmann, cauchy, logarithmic" << std::endl;
-    std::cout << "Default exchange_interval: 100" << std::endl;
 }
 
 std::shared_ptr<ICoolingLaw> createCoolingLaw(const std::string& lawName) {
@@ -33,14 +32,11 @@ std::shared_ptr<ICoolingLaw> createCoolingLaw(const std::string& lawName) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 8) {
+    if (argc < 12) {
         std::cerr << "Error: Invalid number of arguments" << std::endl;
         printUsage(argv[0]);
         return 1;
     }
-
-    bool enableLogging = true; // или false чтобы отключить
-    Logger::initialize(enableLogging, "simulated_annealing.log");
 
     try {
         int jobCount = std::stoi(argv[1]);
@@ -54,6 +50,8 @@ int main(int argc, char* argv[]) {
         int iterationsWithoutImprovement = std::stoi(argv[9]);
         int iterationsWithoutImprovementGlobal = std::stoi(argv[10]);
         int numThreads = std::stoi(argv[11]);
+        bool enableLogging = (argc > 12) && (argv[12] == std::string("log"));
+        Logger::initialize(enableLogging, "simulated_annealing.log");
 
         if (jobCount <= 0 || processorCount <= 0 || numThreads <= 0 || exchangeInterval <= 0) {
             throw std::invalid_argument("All numeric parameters must be positive");
@@ -68,11 +66,11 @@ int main(int argc, char* argv[]) {
         auto coolingLaw = createCoolingLaw(coolingLawName);
 
         std::cout << "=== Parallel Simulated Annealing Scheduler ===" << std::endl;
-        std::cout << "Parameters: " << jobCount << " jobs, " << processorCount 
-                  << " processors, duration range [" << jobMinDuration << ", " << jobMaxDuration << "]" << std::endl;
-        std::cout << "Algorithm: " << numThreads << " threads, " << coolingLawName 
-                  << " cooling, T0=" << initialTemperature << std::endl;
-        std::cout << "Exchange interval: " << exchangeInterval << std::endl;
+        printUsage(argv[0]);
+        for (int i = 1; i < argc; ++i) {
+            std::cout << argv[i] << " ";
+        }
+        std::cout << std::endl;
         
         CSVDataGenerator dataGenerator;
         dataGenerator.generateData(jobCount, processorCount, jobMinDuration, jobMaxDuration, "input.csv");
@@ -100,13 +98,6 @@ int main(int argc, char* argv[]) {
         psa.setMaxIterationsWithoutImprovementGlobal(iterationsWithoutImprovementGlobal);
         psa.setExchangeInterval(exchangeInterval);
         
-        std::cout << "Initial temperature: " << initialTemperature << std::endl;
-        std::cout << "Cooling law: " << coolingLawName << std::endl;
-        std::cout << "Iterations per temperature: " << iterationsPerTemperature << std::endl;
-        std::cout << "Max iterations without improvement: " << iterationsWithoutImprovement << std::endl;
-        std::cout << "Exchange interval: " << exchangeInterval << std::endl;
-        std::cout << "Number of threads: " << numThreads << std::endl;
-        
         std::cout << "\n3. Running parallel simulated annealing..." << std::endl;
         auto startTime = std::chrono::high_resolution_clock::now();
         
@@ -125,72 +116,9 @@ int main(int argc, char* argv[]) {
                 std::cout << "Best solution fitness: " << bestFitness << std::endl;
                 std::cout << "Improvement: " << (initialFitness - bestFitness) << std::endl;
                 std::cout << "Improvement percentage: " << ((initialFitness - bestFitness) / initialFitness * 100) << "%" << std::endl;
-                
-                // std::cout << "\nFinal schedule:" << std::endl;
-                // for (int j = 0; j < processorCount; ++j) {
-                //     std::cout << "Processor " << j << ": ";
-                //     double processorTime = 0.0;
-                //     for (int i = 0; i < jobCount; ++i) {
-                //         if (scheduleSolution->isJobAssignedToProcessor(i, j)) {
-                //             std::cout << "J" << i << "(" << data.jobDurations[i] << ") ";
-                //             processorTime += data.jobDurations[i];
-                //         }
-                //     }
-                //     std::cout << "→ Total: " << processorTime << std::endl;
-                // }
             }
         } else {
             std::cout << "No solution found!" << std::endl;
-        }
-        
-        std::cout << "\n5. Validating solution..." << std::endl;
-        if (bestSolution) {
-            auto scheduleSolution = std::dynamic_pointer_cast<ScheduleSolution>(bestSolution);
-            if (scheduleSolution) {
-                bool isValid = true;
-                for (int i = 0; i < jobCount; ++i) {
-                    int assignmentCount = 0;
-                    for (int j = 0; j < processorCount; ++j) {
-                        if (scheduleSolution->isJobAssignedToProcessor(i, j)) {
-                            assignmentCount++;
-                        }
-                    }
-                    if (assignmentCount != 1) {
-                        isValid = false;
-                        std::cout << "ERROR: Job " << i << " assigned to " << assignmentCount << " processors!" << std::endl;
-                    }
-                }
-                
-                if (isValid) {
-                    std::cout << "Solution is valid - all jobs assigned correctly" << std::endl;
-                } else {
-                    std::cout << "Solution is invalid!" << std::endl;
-                }
-                
-                std::vector<bool> jobsAssigned(jobCount, false);
-                for (int i = 0; i < jobCount; ++i) {
-                    for (int j = 0; j < processorCount; ++j) {
-                        if (scheduleSolution->isJobAssignedToProcessor(i, j)) {
-                            jobsAssigned[i] = true;
-                            break;
-                        }
-                    }
-                }
-                
-                bool allJobsAssigned = true;
-                for (int i = 0; i < jobCount; ++i) {
-                    if (!jobsAssigned[i]) {
-                        allJobsAssigned = false;
-                        std::cout << "ERROR: Job " << i << " is not assigned to any processor!" << std::endl;
-                    }
-                }
-                
-                if (allJobsAssigned) {
-                    std::cout << "All jobs are assigned to processors" << std::endl;
-                } else {
-                    std::cout << "Some jobs are missing!" << std::endl;
-                }
-            }
         }
         
         std::cout << "\n=== Parallel algorithm finished ===" << std::endl;
