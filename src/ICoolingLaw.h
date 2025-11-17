@@ -3,5 +3,6 @@
 class ICoolingLaw {
 public:
     virtual ~ICoolingLaw() = default;
-    virtual double cool(double currentTemperature, int iteration) = 0;
+    virtual void initialize(double temperature) = 0;
+    virtual double cool(int iteration) = 0;
 };

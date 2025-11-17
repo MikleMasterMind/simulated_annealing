@@ -1,9 +1,13 @@
 #include "BoltzmannCooling.h"
 #include <cmath>
 
-double BoltzmannCooling::cool(double currentTemperature, int iteration) {
+double BoltzmannCooling::cool(int iteration) {
     if (iteration == 0) {
-        return currentTemperature;
+        return temperature_;
     }
-    return currentTemperature / std::log(1 + iteration);
+    return temperature_ / std::log(1 + iteration);
+}
+
+void BoltzmannCooling::initialize(double temperature) {
+    temperature_ = temperature;
 }

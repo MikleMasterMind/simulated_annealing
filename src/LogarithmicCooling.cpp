@@ -1,9 +1,13 @@
 #include "LogarithmicCooling.h"
 #include <cmath>
 
-double LogarithmicCooling::cool(double currentTemperature, int iteration) {
+double LogarithmicCooling::cool(int iteration) {
     if (iteration == 0) {
-        return currentTemperature;
+        return temperature_;
     }
-    return currentTemperature * std::log(1 + iteration) / (1 + iteration);
+    return temperature_ * std::log(1 + iteration) / (1 + iteration);
+}
+
+void LogarithmicCooling::initialize(double temperature) {
+    temperature_ = temperature;
 }

@@ -4,5 +4,8 @@
 
 class BoltzmannCooling : public ICoolingLaw {
 public:
-    double cool(double currentTemperature, int iteration) override;
+    void initialize(double temperature) override;
+    double cool(int iteration) override;
+private:
+    double temperature_;
 };

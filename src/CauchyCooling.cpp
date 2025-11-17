@@ -1,8 +1,12 @@
 #include "CauchyCooling.h"
 
-double CauchyCooling::cool(double currentTemperature, int iteration) {
+double CauchyCooling::cool(int iteration) {
     if (iteration == 0) {
-        return currentTemperature;
+        return temperature_;
     }
-    return currentTemperature / (1 + iteration);
+    return temperature_ / (1 + iteration);
+}
+
+void CauchyCooling::initialize(double temperature) {
+    temperature_ = temperature;
 }

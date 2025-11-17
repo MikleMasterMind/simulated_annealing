@@ -229,7 +229,7 @@ std::shared_ptr<ISolution> SimulatedAnnealing::run() {
         {
             std::lock_guard<std::mutex> lock(stateMutex_);
             double oldTemperature = currentTemperature_;
-            currentTemperature_ = coolingLaw_->cool(currentTemperature_, totalIteration);
+            currentTemperature_ = coolingLaw_->cool(totalIteration);
             Logger::log("Temperature cooled: " + std::to_string(oldTemperature) + 
                         " -> " + std::to_string(currentTemperature_));
         }

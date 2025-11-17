@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
         
         std::cout << "\n2. Configuring parallel simulated annealing..." << std::endl;
         auto mutation = std::make_shared<ScheduleMutation>();
+        coolingLaw->initialize(initialTemperature);
         
         ParallelSimulatedAnnealing psa(numThreads);
         psa.setInitialSolution(initialSolution);
