@@ -5,10 +5,10 @@
 #include <thread>
 
 SimulatedAnnealing::SimulatedAnnealing()
-    : initialTemperature_(1000.0)
-    , currentTemperature_(1000.0)
-    , iterationsPerTemperature_(100)
-    , maxIterationsWithoutImprovement_(100)
+    : initialTemperature_(0.0)
+    , currentTemperature_(0.0)
+    , iterationsPerTemperature_(0)
+    , maxIterationsWithoutImprovement_(0)
     , isRunning_(false)
     , isPaused_(false)
     , shouldStop_(false) {
