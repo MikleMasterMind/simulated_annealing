@@ -7,13 +7,13 @@
 
 ParallelSimulatedAnnealing::ParallelSimulatedAnnealing(int numThreads)
     : numThreads_(numThreads)
-    , exchangeInterval_(100)
+    , exchangeInterval_(0)
     , shouldStop_(false)
     , iterationsWithoutImprovement_(0)
     , globalBestFitness_(std::numeric_limits<double>::max())
-    , initialTemperature_(1000.0)
-    , iterationsPerTemperature_(100)
-    , maxIterationsWithoutImprovement_(100) {
+    , initialTemperature_(0.0)
+    , iterationsPerTemperature_(0)
+    , maxIterationsWithoutImprovement_(0) {
     
     if (numThreads_ <= 0) {
         numThreads_ = std::thread::hardware_concurrency();
@@ -28,47 +28,39 @@ ParallelSimulatedAnnealing::~ParallelSimulatedAnnealing() {
 }
 
 void ParallelSimulatedAnnealing::setInitialSolution(const std::shared_ptr<ISolution>& solution) {
-    std::lock_guard<std::mutex> lock(initialSolutionMutex_);
     initialSolutionTemplate_ = solution;
     Logger::log("Initial solution set for parallel algorithm");
 }
 
 void ParallelSimulatedAnnealing::setMutation(const std::shared_ptr<IMutation>& mutation) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     mutation_ = mutation;
 }
 
 void ParallelSimulatedAnnealing::setCoolingLaw(const std::shared_ptr<ICoolingLaw>& coolingLaw) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     coolingLaw_ = coolingLaw;
 }
 
 void ParallelSimulatedAnnealing::setInitialTemperature(double temperature) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     initialTemperature_ = temperature;
     Logger::log("Parallel initial temperature set to: " + std::to_string(temperature));
 }
 
 void ParallelSimulatedAnnealing::setIterationsPerTemperature(int iterations) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     iterationsPerTemperature_ = iterations;
     Logger::log("Parallel iterations per temperature set to: " + std::to_string(iterations));
 }
 
 void ParallelSimulatedAnnealing::setMaxIterationsWithoutImprovement(int iterations) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     maxIterationsWithoutImprovement_ = iterations;
     Logger::log("Parallel max iterations without improvement set to: " + std::to_string(iterations));
 }
 
 void ParallelSimulatedAnnealing::setMaxIterationsWithoutImprovementGlobal(int iterations) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     maxIterationsWithoutImprovementGlobal_ = iterations;
     Logger::log("Parallel max iterations without improvement global set to: " + std::to_string(iterations));
 }
 
 void ParallelSimulatedAnnealing::setExchangeInterval(int interval) {
-    std::lock_guard<std::mutex> lock(configMutex_);
     exchangeInterval_ = interval;
     Logger::log("Exchange interval set to: " + std::to_string(interval));
 }
@@ -127,7 +119,6 @@ std::shared_ptr<ISolution> ParallelSimulatedAnnealing::run() {
     
     stop();
     
-    // Финальный обмен решений перед возвратом
     exchangeSolutions();
     
     Logger::log("Parallel algorithm FINISHED: global_cycles=" + std::to_string(globalCycle) +
@@ -152,20 +143,24 @@ void ParallelSimulatedAnnealing::workerThread(int threadId) {
     
     int localIterations = 0;
     
-    while (!shouldStop_ && localIterations < exchangeInterval_ * 10) {
-        auto localBest = threadData.algorithm->run();
+    while (!shouldStop_ && localIterations < exchangeInterval_) {
+        std::shared_ptr<ISolution> localBest = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(threadData.solutionMutex);
+            localBest = threadData.algorithm->run();
+        }
         
         if (localBest) {
-            double localFitness = localBest->evaluate();
-            
             std::lock_guard<std::mutex> lock(threadData.solutionMutex);
+
+            double localFitness = localBest->evaluate();
             threadData.bestSolution = localBest;
             threadData.bestFitness = localFitness;
             
             Logger::log("Thread " + std::to_string(threadId) + " local best: " + std::to_string(localFitness));
         }
         
-        localIterations += exchangeInterval_;
+        ++localIterations;
         
         if (shouldStop_) {
             break;
@@ -213,14 +208,11 @@ void ParallelSimulatedAnnealing::stop() {
 }
 
 bool ParallelSimulatedAnnealing::exchangeSolutions() {
-    std::lock_guard<std::mutex> lock(exchangeMutex_);
-    
     bool globalImproved = false;
     double previousBest = globalBestFitness_;
     
     for (auto& threadData : threads_) {
-        std::lock_guard<std::mutex> solutionLock(threadData.solutionMutex);
-        
+        std::lock_guard<std::mutex> lock(threadData.solutionMutex);
         if (threadData.bestSolution && threadData.bestFitness < globalBestFitness_) {
             globalBestFitness_ = threadData.bestFitness;
             globalBestSolution_ = threadData.bestSolution->clone();
@@ -237,6 +229,7 @@ bool ParallelSimulatedAnnealing::exchangeSolutions() {
         Logger::log("Broadcasting global best solution to all threads");
         for (auto& threadData : threads_) {
             if (threadData.algorithm && globalBestSolution_) {
+                std::lock_guard<std::mutex> lock(threadData.solutionMutex);
                 threadData.algorithm->setCurrentSolution(globalBestSolution_);
             }
         }
@@ -248,13 +241,11 @@ bool ParallelSimulatedAnnealing::exchangeSolutions() {
 }
 
 std::shared_ptr<ISolution> ParallelSimulatedAnnealing::createThreadSpecificSolution() {
-    std::lock_guard<std::mutex> lock(initialSolutionMutex_);
-    
     if (!initialSolutionTemplate_) {
         return nullptr;
     }
     
-    auto solution = initialSolutionTemplate_->clone();
+    auto solution = mutation_->apply(initialSolutionTemplate_->clone());
     
     return solution;
 }

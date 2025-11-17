@@ -36,7 +36,6 @@ private:
         std::thread thread;
         std::mutex solutionMutex;
         
-        // Конструкторы для поддержки копирования/перемещения
         ThreadData() : bestFitness(std::numeric_limits<double>::max()) {}
         ThreadData(const ThreadData&) = delete;
         ThreadData& operator=(const ThreadData&) = delete;
@@ -66,9 +65,6 @@ private:
     std::atomic<double> globalBestFitness_;
     
     std::vector<ThreadData> threads_;
-    std::mutex exchangeMutex_;
-    std::mutex initialSolutionMutex_;
-    std::mutex configMutex_;
     
     std::shared_ptr<ISolution> initialSolutionTemplate_;
     std::shared_ptr<IMutation> mutation_;
