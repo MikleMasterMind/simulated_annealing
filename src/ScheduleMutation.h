@@ -25,7 +25,6 @@ private:
     
     mutable std::mt19937 randomGenerator_;
     
-    void initializeRandomGenerator();
     int selectRandomJob(const std::shared_ptr<ScheduleSolution>& solution) const;
     int selectRandomProcessorExcept(const std::shared_ptr<ScheduleSolution>& solution, int excludedProcessor) const;
     std::pair<int, int> selectTwoJobsOnDifferentProcessors(

@@ -6,10 +6,6 @@
 ScheduleMutation::ScheduleMutation()
     : moveProbability_(0.7)
     , swapProbability_(0.3) {
-    initializeRandomGenerator();
-}
-
-void ScheduleMutation::initializeRandomGenerator() {
     auto seed = std::chrono::steady_clock::now().time_since_epoch().count();
     randomGenerator_.seed(static_cast<unsigned int>(seed));
 }
