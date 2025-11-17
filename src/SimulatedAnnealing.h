@@ -26,18 +26,12 @@ public:
     std::shared_ptr<ISolution> getBestSolution() const;
     double getBestFitness() const;
     
-    void pause();
-    void resume();
     void stop();
     bool isRunning() const;
     
     std::shared_ptr<ISolution> run();
 
 private:
-    mutable std::mutex solutionMutex_;
-    mutable std::mutex stateMutex_;
-    std::condition_variable pauseCondition_;
-    
     std::shared_ptr<ISolution> currentSolution_;
     std::shared_ptr<ISolution> bestSolution_;
     std::shared_ptr<IMutation> mutation_;
@@ -49,12 +43,9 @@ private:
     int maxIterationsWithoutImprovement_;
     
     std::atomic<bool> isRunning_;
-    std::atomic<bool> isPaused_;
     std::atomic<bool> shouldStop_;
     
     mutable std::mt19937 randomGenerator_;
     
-    void initializeRandomGenerator();
-    bool shouldAcceptWorseSolution(double deltaF) const;
-    void waitIfPaused();
+    bool shouldAcceptSolution(double deltaF) const;
 };
