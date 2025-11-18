@@ -1,0 +1,20 @@
+=== Parallel Simulated Annealing Scheduler ===
+Usage: ./AnnealingScheduler <job_count>  <processor_count> <min_duration> <max_duration> <exchange_interval> <initial_temperature> <cooling_law> <iterations_per_temperature> <iterations_without_improvement> <iterations_without_improvement_global> <num_threads> <log>(optional)
+Example: ./AnnealingScheduler 10 2 1.0 15.0 100 1000.0 boltzmann 50 1000 10 4 log
+Cooling laws: boltzmann, cauchy, logarithmic
+1700 12 1.0 15.0 100 100.0 boltzmann 100 100 1 1 
+
+1. Creating initial solution...
+Initial solution fitness: 13428.2
+
+2. Configuring parallel simulated annealing...
+
+3. Running parallel simulated annealing...
+Algorithm completed in 14998 ms
+
+4. Results:
+Best solution fitness: 1144.56
+Improvement: 12283.6
+Improvement percentage: 91.4764%
+
+=== Parallel algorithm finished ===
