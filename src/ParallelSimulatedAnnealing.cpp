@@ -217,6 +217,7 @@ bool ParallelSimulatedAnnealing::exchangeSolutions() {
             globalBestFitness_ = threadData.bestFitness;
             globalBestSolution_ = threadData.bestSolution->clone();
             globalImproved = true;
+            std::cout << "Global improvment to : " << threadData.bestFitness << std::endl;
             
             Logger::log("GLOBAL IMPROVEMENT: thread " + 
                         std::to_string(&threadData - &threads_[0]) +

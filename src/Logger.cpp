@@ -22,7 +22,7 @@ void Logger::log(const std::string& message) {
     std::lock_guard<std::mutex> lock(logMutex_);
     
     // Вывод в консоль
-    // std::cout << "[LOG] " << message << std::endl;
+    std::cout << "[LOG] " << message << std::endl;
     
     // Запись в файл
     if (logFile_.is_open()) {

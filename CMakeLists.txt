@@ -78,6 +78,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         -Wpedantic
         -Werror
         -Wno-unused-parameter
+        -O2
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(AnnealingScheduler PRIVATE 

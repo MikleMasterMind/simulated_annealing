@@ -23,20 +23,29 @@ ScheduleSolution::ScheduleSolution(const ScheduleSolution& other)
 }
 
 double ScheduleSolution::evaluate() const {
-    std::vector<double> completionTimes(jobCount_ * processorCount_);
-    
+    std::vector<double> minTimes;
+    std::vector<double> maxTimes;
+
     for (int j = 0; j < processorCount_; ++j) {
-        double processorTime = 0.0;
+        std::vector<double> orderedTimes;
         for (int i = 0; i < jobCount_; ++i) {
             if (assignmentMatrix_[i][j]) {
-                processorTime += jobDurations_[i];
-                completionTimes[j * jobCount_ + i] = processorTime;
+                orderedTimes.push_back(jobDurations_[i]);
             }
         }
+
+        // std::sort(orderedTimes.begin(), orderedTimes.end(), [](auto key1, auto key2) { return key1 > key2;});
+        double processorTime = 0.0;
+        for (size_t i = 0; i < orderedTimes.size(); ++i) {
+            processorTime += orderedTimes[i];
+        }
+        
+        minTimes.push_back(orderedTimes.size() > 0 ? *std::max_element(orderedTimes.begin(), orderedTimes.end()) : std::numeric_limits<double>::max());
+        maxTimes.push_back(processorTime > 0 ? processorTime : std::numeric_limits<double>::min());
     }
     
-    double maxCompletionTime = *std::max_element(completionTimes.begin(), completionTimes.end());
-    double minCompletionTime = *std::min_element(completionTimes.begin(), completionTimes.end());
+    double maxCompletionTime = *std::max_element(maxTimes.begin(), maxTimes.end());
+    double minCompletionTime = *std::min_element(minTimes.begin(), minTimes.end());
     
     return maxCompletionTime - minCompletionTime;
 }

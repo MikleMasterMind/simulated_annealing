@@ -149,6 +149,7 @@ std::shared_ptr<ISolution> SimulatedAnnealing::run() {
                 currentSolution_ = newSolution;
                 
                 if (newFitness < bestFitness) {
+                    // std::cout << "Fitness improved to : " << newFitness << std::endl;
                     bestSolution_ = newSolution->clone();
                     bestFitness = newFitness;
                     improvedInThisCycle = true;
